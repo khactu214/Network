@@ -9,8 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.network.R;
-import com.example.network.interfaces.NewsOnClick;
 import com.example.network.model.Item;
 
 import java.util.List;
@@ -18,16 +18,14 @@ import java.util.List;
 public class NewsAdapter extends RecyclerView.Adapter {
     private Activity activity;
     private List<Item> listData;
-    private NewsOnClick iOnClick;
+
 
     public NewsAdapter(Activity activity, List<Item> listData) {
         this.activity = activity;
         this.listData = listData;
     }
 
-    public void setiOnClick(NewsOnClick iOnClick) {
-        this.iOnClick = iOnClick;
-    }
+
 
     public void reloadData(List<Item> listData){
         this.listData = listData;
@@ -37,12 +35,19 @@ public class NewsAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View itemview = activity.getLayoutInflater().inflate(R.layout.item_news,parent,false);
+        NewsHolder holder = new NewsHolder(itemview);
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
+        NewsHolder hd = (NewsHolder) holder;
+        Item model = listData.get(position);
+        hd.tvDate.setText(model.getDate());
+        hd.tvTitle.setText(model.getTitle());
+        hd.tvContent.setText(model.getContent().getDescription());
+        Glide.with(activity).load(model.getImage()).into(hd.ivCover);
     }
 
     @Override
@@ -59,12 +64,6 @@ public class NewsAdapter extends RecyclerView.Adapter {
             tvContent = itemView.findViewById(R.id.tvContent);
             ivCover = itemView.findViewById(R.id.ivCover);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    iOnClick.onClickItem(getAdapterPosition());
-                }
-            });
         }
     }
 }
